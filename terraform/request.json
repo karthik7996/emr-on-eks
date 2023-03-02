@@ -1,0 +1,32 @@
+{
+    "name": "pi-4",
+    "virtualClusterId": "${VIRTUAL_CLUSTER_ID}",
+    "executionRoleArn": "${EMR_ROLE_ARN}",
+    "releaseLabel": "emr-6.2.0-latest",
+    "jobDriver": {
+        "sparkSubmitJobDriver": {
+            "entryPoint": "local:///usr/lib/spark/examples/src/main/python/pi.py",
+            "sparkSubmitParameters": "--conf spark.executor.instances=2 --conf spark.executor.memory=2G --conf spark.executor.cores=2 --conf spark.driver.cores=1"
+        }
+    },
+    "configurationOverrides": {
+        "applicationConfiguration": [
+            {
+                "classification": "spark-defaults",
+                "properties": {
+                  "spark.dynamicAllocation.enabled": "false",
+                  "spark.kubernetes.executor.deleteOnTermination": "true"
+                }
+            }
+        ],
+        "monitoringConfiguration": {
+            "cloudWatchMonitoringConfiguration": {
+                "logGroupName": "/emr-on-eks/eksworkshop-eksctl",
+                "logStreamNamePrefix": "pi"
+            },
+            "s3MonitoringConfiguration": {
+                "logUri": "${s3DemoBucket}/"
+            }
+        }
+    }
+}
